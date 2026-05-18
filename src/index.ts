@@ -11,6 +11,9 @@ export type {
   LookupResult,
   ListAgentsResult,
   GentIDClientOptions,
+  AgentPermissions,
+  AgentTrustGrant,
+  BadgeData,
 } from './types';
 
 // Quick start:

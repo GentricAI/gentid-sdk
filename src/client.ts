@@ -8,6 +8,9 @@ import type {
   VerificationType,
   ListAgentsResult,
   LookupResult,
+  AgentPermissions,
+  AgentTrustGrant,
+  BadgeData,
 } from './types';
 
 export class GentIDError extends Error {
@@ -110,5 +113,39 @@ export class GentIDClient {
   async getVerificationStatus(agentId: string): Promise<VerificationRecord[]> {
     const params = new URLSearchParams({ agentId });
     return this.request<VerificationRecord[]>('GET', `/verification/status?${params}`);
+  }
+
+  // ─── Permissions ──────────────────────────────────────────────────────────────
+
+  async getPermissions(agentId: string): Promise<AgentPermissions> {
+    return this.request<AgentPermissions>('GET', `/portal/agents/${encodeURIComponent(agentId)}/permissions`);
+  }
+
+  async setPermissions(agentId: string, permissions: Record<string, unknown>): Promise<AgentPermissions> {
+    return this.request<AgentPermissions>('PUT', `/portal/agents/${encodeURIComponent(agentId)}/permissions`, { permissions });
+  }
+
+  // ─── Trust ────────────────────────────────────────────────────────────────────
+
+  async listTrustedAgents(agentId: string): Promise<AgentTrustGrant[]> {
+    return this.request<AgentTrustGrant[]>('GET', `/portal/agents/${encodeURIComponent(agentId)}/trust`);
+  }
+
+  async grantTrust(
+    grantorAgentId: string,
+    params: { granteeAgentId: string; scope?: string[]; expiresAt?: string },
+  ): Promise<AgentTrustGrant> {
+    return this.request<AgentTrustGrant>('POST', `/portal/agents/${encodeURIComponent(grantorAgentId)}/trust`, params);
+  }
+
+  async revokeTrust(grantorAgentId: string, trustId: string): Promise<void> {
+    return this.request<void>('DELETE', `/portal/agents/${encodeURIComponent(grantorAgentId)}/trust/${encodeURIComponent(trustId)}`);
+  }
+
+  // ─── Badge ────────────────────────────────────────────────────────────────────
+
+  /** Returns badge data + embed snippet. No API key required. */
+  async getBadge(agentId: string): Promise<BadgeData> {
+    return this.request<BadgeData>('GET', `/badge/${encodeURIComponent(agentId)}`, undefined, false);
   }
 }

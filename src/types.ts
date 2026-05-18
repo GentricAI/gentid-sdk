@@ -49,6 +49,32 @@ export interface LookupResult {
   algorithm: string;
   owner: string;
   issuedAt: string;
+  /** 0–100 trust score computed from age, owner verification, signature volume, and verified records. */
+  trustScore: number;
+}
+
+export interface AgentPermissions {
+  agentId: string;
+  permissions: Record<string, unknown>;
+}
+
+export interface AgentTrustGrant {
+  id: string;
+  granteeAgentId: string;
+  scope: string[];
+  expiresAt: string | null;
+  createdAt: string;
+}
+
+export interface BadgeData {
+  agentId: string;
+  name: string;
+  status: AgentStatus;
+  owner: string;
+  trustScore: number;
+  issuedAt: string;
+  embedUrl: string;
+  embedSnippet: string;
 }
 
 export interface ListAgentsResult {
