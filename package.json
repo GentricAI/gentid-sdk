@@ -1,0 +1,68 @@
+{
+  "name": "@gentid/sdk",
+  "version": "1.0.2",
+  "description": "TypeScript SDK for GentID — cryptographic identity for AI agents",
+  "license": "MIT",
+  "homepage": "https://gentid.com",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/010101G/gentid-sdk.git"
+  },
+  "bugs": {
+    "url": "https://github.com/010101G/gentid-sdk/issues"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "keywords": [
+    "gentid",
+    "ai-agent",
+    "ai-identity",
+    "agent-identity",
+    "cryptographic-identity",
+    "ed25519",
+    "digital-signature",
+    "signature-verification",
+    "agent-verification",
+    "identity",
+    "identity-management",
+    "public-key",
+    "public-key-cryptography",
+    "keypair",
+    "signing",
+    "verification",
+    "trust",
+    "zero-trust",
+    "ai",
+    "artificial-intelligence",
+    "autonomous-agent",
+    "llm",
+    "agent",
+    "multi-agent",
+    "agentic",
+    "sdk",
+    "api-client",
+    "typescript",
+    "node",
+    "security",
+    "authentication",
+    "authorization",
+    "webhook",
+    "blockchain-alternative",
+    "provenance",
+    "audit-trail"
+  ],
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.21",
+    "typescript": "^5.8.3"
+  }
+}
