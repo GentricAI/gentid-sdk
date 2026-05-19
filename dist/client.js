@@ -76,6 +76,54 @@ class GentIDClient {
         const params = new URLSearchParams({ agentId });
         return this.request('GET', `/verification/status?${params}`);
     }
+    // ─── Permissions ──────────────────────────────────────────────────────────────
+    async getPermissions(agentId) {
+        return this.request('GET', `/portal/agents/${encodeURIComponent(agentId)}/permissions`);
+    }
+    async setPermissions(agentId, permissions) {
+        return this.request('PUT', `/portal/agents/${encodeURIComponent(agentId)}/permissions`, { permissions });
+    }
+    // ─── Trust ────────────────────────────────────────────────────────────────────
+    async listTrustedAgents(agentId) {
+        return this.request('GET', `/portal/agents/${encodeURIComponent(agentId)}/trust`);
+    }
+    async grantTrust(grantorAgentId, params) {
+        return this.request('POST', `/portal/agents/${encodeURIComponent(grantorAgentId)}/trust`, params);
+    }
+    async revokeTrust(grantorAgentId, trustId) {
+        return this.request('DELETE', `/portal/agents/${encodeURIComponent(grantorAgentId)}/trust/${encodeURIComponent(trustId)}`);
+    }
+    // ─── Badge ────────────────────────────────────────────────────────────────────
+    /** Returns badge data + embed snippet. No API key required. */
+    async getBadge(agentId) {
+        return this.request('GET', `/badge/${encodeURIComponent(agentId)}`, undefined, false);
+    }
+    // ─── Delegation ───────────────────────────────────────────────────────────────
+    /**
+     * Issue a signed permission token for an agent.
+     * The JWT encodes the agent's identity + permissions and can be verified
+     * by any third party without calling GentID (offline-verifiable).
+     */
+    async getToken(agentId) {
+        return this.request('GET', `/portal/agents/${encodeURIComponent(agentId)}/token`);
+    }
+    /**
+     * Verify a permission token issued by GentID.
+     * No API key required — useful for third-party server verification.
+     */
+    async verifyToken(token) {
+        return this.request('POST', '/verification/verify-token', { token }, false);
+    }
+    /**
+     * Request owner approval for an action above the agent's configured threshold.
+     * The org owner is notified in real time and has 15 minutes to approve or reject.
+     */
+    async requestApproval(agentId, action, metadata) {
+        return this.request('POST', `/agents/${encodeURIComponent(agentId)}/request-approval`, {
+            action,
+            metadata: metadata ?? {},
+        });
+    }
 }
 exports.GentIDClient = GentIDClient;
 //# sourceMappingURL=client.js.map

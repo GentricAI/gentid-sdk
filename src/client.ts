@@ -11,6 +11,9 @@ import type {
   AgentPermissions,
   AgentTrustGrant,
   BadgeData,
+  PermissionToken,
+  VerifiedToken,
+  ApprovalRequest,
 } from './types';
 
 export class GentIDError extends Error {
@@ -147,5 +150,39 @@ export class GentIDClient {
   /** Returns badge data + embed snippet. No API key required. */
   async getBadge(agentId: string): Promise<BadgeData> {
     return this.request<BadgeData>('GET', `/badge/${encodeURIComponent(agentId)}`, undefined, false);
+  }
+
+  // ─── Delegation ───────────────────────────────────────────────────────────────
+
+  /**
+   * Issue a signed permission token for an agent.
+   * The JWT encodes the agent's identity + permissions and can be verified
+   * by any third party without calling GentID (offline-verifiable).
+   */
+  async getToken(agentId: string): Promise<PermissionToken> {
+    return this.request<PermissionToken>('GET', `/portal/agents/${encodeURIComponent(agentId)}/token`);
+  }
+
+  /**
+   * Verify a permission token issued by GentID.
+   * No API key required — useful for third-party server verification.
+   */
+  async verifyToken(token: string): Promise<VerifiedToken> {
+    return this.request<VerifiedToken>('POST', '/verification/verify-token', { token }, false);
+  }
+
+  /**
+   * Request owner approval for an action above the agent's configured threshold.
+   * The org owner is notified in real time and has 15 minutes to approve or reject.
+   */
+  async requestApproval(
+    agentId: string,
+    action: string,
+    metadata?: Record<string, unknown>,
+  ): Promise<ApprovalRequest> {
+    return this.request<ApprovalRequest>('POST', `/agents/${encodeURIComponent(agentId)}/request-approval`, {
+      action,
+      metadata: metadata ?? {},
+    });
   }
 }

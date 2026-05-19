@@ -77,6 +77,35 @@ export interface BadgeData {
   embedSnippet: string;
 }
 
+export interface PermissionToken {
+  token: string;
+  expiresAt: string;
+}
+
+export interface VerifiedToken {
+  valid: true;
+  agentId: string;
+  agentName: string;
+  owner: string;
+  status: string;
+  permissions: Record<string, unknown>;
+  issuedAt: string;
+  expiresAt: string;
+}
+
+export interface ApprovalRequest {
+  id: string;
+  agentId: string;
+  agentName: string;
+  orgId: string;
+  action: string;
+  metadata: Record<string, unknown>;
+  status: 'pending' | 'approved' | 'rejected' | 'expired';
+  requestedAt: string;
+  resolvedAt: string | null;
+  expiresAt: string;
+}
+
 export interface ListAgentsResult {
   agents: Agent[];
   total: number;

@@ -14,6 +14,9 @@ export type {
   AgentPermissions,
   AgentTrustGrant,
   BadgeData,
+  PermissionToken,
+  VerifiedToken,
+  ApprovalRequest,
 } from './types';
 
 // Quick start:
