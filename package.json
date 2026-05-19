@@ -1,7 +1,7 @@
 {
   "name": "@gentid/sdk",
-  "version": "1.0.2",
-  "description": "TypeScript SDK for GentID — cryptographic identity for AI agents",
+  "version": "1.1.0",
+  "description": "TypeScript SDK for GentID — cryptographic identity, permissions, and agent gateway for AI agents",
   "license": "MIT",
   "homepage": "https://gentid.com",
   "repository": {
