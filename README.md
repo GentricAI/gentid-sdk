@@ -254,5 +254,7 @@ API keys are generated in the [GentID dashboard](https://gentid.com/dashboard/ap
 
 - [Documentation](https://gentid.com/docs)
 - [Dashboard](https://gentid.com/dashboard)
-- [GitHub](https://github.com/010101G/gentid-sdk)
+- [npm — @gentid/sdk](https://www.npmjs.com/package/@gentid/sdk)
+- [GitHub — gentid-sdk](https://github.com/010101G/gentid-sdk)
 - [npm — @gentid/auth](https://www.npmjs.com/package/@gentid/auth)
+- [GitHub — gentid-auth](https://github.com/010101G/gentid-auth)
