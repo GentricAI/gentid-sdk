@@ -1,6 +1,16 @@
 # @gentid/sdk
 
-TypeScript SDK for [GentID](https://gentid.com) — cryptographic identity, permissions, and agent gateway infrastructure for AI agents.
+> **Deprecated: this is the registry-era v1 client.** GentID is now an open, federated
+> protocol: organizations issue agent identities under their own domains and anyone verifies
+> them locally, with no registry API in the loop. New integrations should use
+> [`@gentid/core`](https://github.com/gentricai/gentid-core) (protocol formats and pure
+> verification), [`@gentid/auth`](https://github.com/gentricai/gentid-auth) (relying-party
+> middleware), and [`@gentid/cli`](https://github.com/gentricai/gentid-cli) (issue identities
+> from your own node). This package keeps working through the migration window and emits a
+> one-time DeprecationWarning. See the [migration guide](https://gentid.com/docs#migration).
+
+TypeScript client for the hosted GentID v1 API: create agents, sign and verify messages, and
+issue permission tokens against a hosted or self-hosted GentID node.
 
 [![npm version](https://img.shields.io/npm/v/@gentid/sdk.svg)](https://www.npmjs.com/package/@gentid/sdk)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
@@ -26,18 +36,18 @@ const gentid = new GentIDClient({
 
 // 1. Create an agent identity
 const agent = await gentid.createAgent({ name: 'payments-bot', owner: 'acme-corp' });
-// ⚠  Store agent.privateKey — it is returned only once, never again.
+// ⚠  Store agent.privateKey. It is returned only once, never again.
 
 // 2. Sign any action
 const { signature } = await gentid.signMessage(agent.id, 'approve-payment-$500');
 
-// 3. Verify from anywhere — no API key needed
+// 3. Verify from anywhere. No API key needed
 const { valid } = await gentid.verifySignature(agent.id, 'approve-payment-$500', signature);
 
 // 4. Issue a permission token for a third party to verify
 const { token } = await gentid.getToken(agent.id);
 
-// 5. Any server can verify the token offline — no API key needed
+// 5. Any server can verify the token offline. No API key needed
 const verified = await gentid.verifyToken(token);
 // { valid: true, agentId, agentName, owner, permissions, ... }
 ```
@@ -66,14 +76,14 @@ await gentid.revokeAgent(agent.id);  // permanent
 // Sign a message locally, then log to GentID for audit
 const { signature } = await gentid.signMessage(agent.id, 'approve-order-123');
 
-// Verify — public endpoint, no API key required
+// Verify: public endpoint, no API key required
 const { valid } = await gentid.verifySignature(agent.id, 'approve-order-123', signature);
 ```
 
 ## Verification
 
 ```typescript
-// Public lookup — no API key required
+// Public lookup: no API key required
 // Returns identity, public key, status, and trust score (0–100)
 const identity = await gentid.lookupAgent('gentic:agent:a3f9d2c1e8b4');
 // { id, name, status, publicKey, algorithm, owner, issuedAt, trustScore }
@@ -85,7 +95,7 @@ const records = await gentid.getVerificationStatus(agent.id);
 
 ## Permissions
 
-Set what each agent is allowed to do. Permissions are free-form JSON — define any schema that fits your use case.
+Set what each agent is allowed to do. Permissions are free-form JSON; define any schema that fits your use case.
 
 ```typescript
 // Set permissions for an agent
@@ -102,10 +112,10 @@ const { permissions } = await gentid.getPermissions(agent.id);
 
 ## Permission tokens
 
-Issue a signed JWT that encodes the agent's identity and permissions. Any third party can verify it — online or offline.
+Issue a signed JWT that encodes the agent's identity and permissions. Any third party can verify it, online or offline.
 
 ```typescript
-// Agent side — get a short-lived signed token (1 hour TTL)
+// Agent side: get a short-lived signed token (1 hour TTL)
 const { token, expiresAt } = await gentid.getToken(agent.id);
 
 // Attach to outgoing requests
@@ -113,7 +123,7 @@ fetch('https://partner-site.com/api/book', {
   headers: { 'Authorization': `GentID ${token}` },
 });
 
-// Third-party server — verify with no API key
+// Third-party server: verify with no API key
 const result = await gentid.verifyToken(token);
 // {
 //   valid: true,
@@ -165,13 +175,13 @@ Embed a verified identity badge on any page.
 ```typescript
 // No API key required
 const badge = await gentid.getBadge(agent.id);
-// badge.embedSnippet — paste into any HTML page
-// badge.trustScore   — 0–100 public trust score
+// badge.embedSnippet: paste into any HTML page
+// badge.trustScore:   0 to 100 public trust score
 ```
 
 ---
 
-## Agent Gateway — `@gentid/auth`
+## Agent Gateway: `@gentid/auth`
 
 To accept GentID-authenticated agents on your server, install the companion middleware package:
 
@@ -254,7 +264,7 @@ API keys are generated in the [GentID dashboard](https://gentid.com/dashboard/ap
 
 - [Documentation](https://gentid.com/docs)
 - [Dashboard](https://gentid.com/dashboard)
-- [npm — @gentid/sdk](https://www.npmjs.com/package/@gentid/sdk)
-- [GitHub — gentid-sdk](https://github.com/010101G/gentid-sdk)
-- [npm — @gentid/auth](https://www.npmjs.com/package/@gentid/auth)
-- [GitHub — gentid-auth](https://github.com/010101G/gentid-auth)
+- [npm: @gentid/sdk](https://www.npmjs.com/package/@gentid/sdk)
+- [GitHub: gentid-sdk](https://github.com/gentricai/gentid-sdk)
+- [npm: @gentid/auth](https://www.npmjs.com/package/@gentid/auth)
+- [GitHub: gentid-auth](https://github.com/gentricai/gentid-auth)
