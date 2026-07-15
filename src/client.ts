@@ -1,3 +1,4 @@
+import { resolveDiscovery, type DiscoveryDocument } from '@gentid/protocol';
 import type {
   GentIDClientOptions,
   Agent,
@@ -29,6 +30,14 @@ export class GentIDError extends Error {
 
 const DEFAULT_BASE_URL = 'https://api.gentid.com';
 
+let deprecationWarned = false;
+
+/**
+ * @deprecated Registry-era client, preserved for compatibility. GentID is now a
+ * federated protocol: issue identities from your own node (`npx @gentid/cli init`)
+ * and verify with `@gentid/auth` v2 / `@gentid/core` — no registry API involved.
+ * See https://gentid.com/docs#migration
+ */
 export class GentIDClient {
   private readonly baseUrl: string;
   private readonly apiKey: string;
@@ -36,6 +45,18 @@ export class GentIDClient {
   constructor({ baseUrl = DEFAULT_BASE_URL, apiKey }: GentIDClientOptions) {
     this.baseUrl = baseUrl.replace(/\/$/, '');
     this.apiKey = apiKey;
+    if (!deprecationWarned) {
+      deprecationWarned = true;
+      const warn =
+        '@gentid/sdk v1 is the registry-era API and is deprecated. GentID is now a ' +
+        'federated protocol: see https://gentid.com/docs#migration for the v2 path ' +
+        '(@gentid/core, @gentid/auth, @gentid/cli).';
+      if (typeof process !== 'undefined' && typeof process.emitWarning === 'function') {
+        process.emitWarning(warn, 'DeprecationWarning');
+      } else {
+        console.warn(warn);
+      }
+    }
   }
 
   private async request<T>(method: string, path: string, body?: unknown, auth = true): Promise<T> {
@@ -150,6 +171,18 @@ export class GentIDClient {
   /** Returns badge data + embed snippet. No API key required. */
   async getBadge(agentId: string): Promise<BadgeData> {
     return this.request<BadgeData>('GET', `/badge/${encodeURIComponent(agentId)}`, undefined, false);
+  }
+
+  // ─── Discovery ────────────────────────────────────────────────────────────────
+
+  /**
+   * Fetches the protocol discovery document for another GentID-compatible issuer —
+   * e.g. `gentid.discover("identity.apple.com")`. Useful when you need to verify
+   * agents issued by an instance other than the one this client is configured
+   * against. Does not require an API key.
+   */
+  async discover(issuerHost: string): Promise<DiscoveryDocument> {
+    return resolveDiscovery(issuerHost);
   }
 
   // ─── Delegation ───────────────────────────────────────────────────────────────

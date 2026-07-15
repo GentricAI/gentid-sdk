@@ -1,6 +1,6 @@
 {
   "name": "@gentid/sdk",
-  "version": "1.1.2",
+  "version": "1.2.0",
   "description": "TypeScript SDK for GentID — cryptographic identity, permissions, and agent gateway for AI agents",
   "license": "MIT",
   "homepage": "https://gentid.com",
@@ -60,6 +60,9 @@
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch"
+  },
+  "dependencies": {
+    "@gentid/protocol": "file:../gentid-protocol"
   },
   "devDependencies": {
     "@types/node": "^22.15.21",

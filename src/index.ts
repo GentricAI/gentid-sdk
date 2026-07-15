@@ -1,4 +1,5 @@
 export { GentIDClient, GentIDError } from './client';
+export type { DiscoveryDocument } from '@gentid/protocol';
 export type {
   Agent,
   CreatedAgent,
